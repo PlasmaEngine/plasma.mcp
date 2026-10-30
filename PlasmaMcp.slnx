@@ -1,0 +1,54 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="EditorPluginPlasmaMcp-Debug" />
+    <BuildType Name="EditorPluginPlasmaMcp-Development" />
+    <BuildType Name="EditorPluginPlasmaMcp-Shipping" />
+    <Platform Name="Windows-x64" />
+    <Platform Name="Windows-ARM64" />
+    <Platform Name="Android-ARM64" />
+  </Configurations>
+  <Folder Name="/Project/">
+    <Project Path="Intermediate/ProjectFiles/PlasmaMcp/PlasmaMcp.vcxproj" Id="ef71cdb9-c570-acbc-0915-ccf6fa6537fd">
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|Windows-x64" Project="EditorPluginPlasmaMcp-Debug-Windows-x64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|Windows-ARM64" Project="EditorPluginPlasmaMcp-Debug-Windows-ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|Android-ARM64" Project="EditorPluginPlasmaMcp-Debug-Android-ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|Windows-x64" Project="EditorPluginPlasmaMcp-Development-Windows-x64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|Windows-ARM64" Project="EditorPluginPlasmaMcp-Development-Windows-ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|Android-ARM64" Project="EditorPluginPlasmaMcp-Development-Android-ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|Windows-x64" Project="EditorPluginPlasmaMcp-Shipping-Windows-x64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|Windows-ARM64" Project="EditorPluginPlasmaMcp-Shipping-Windows-ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|Android-ARM64" Project="EditorPluginPlasmaMcp-Shipping-Android-ARM64" />
+      <Platform Project="x64" />
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Launcher/" />
+  <Folder Name="/Launcher/Windows/">
+    <Project Path="Intermediate/ProjectFiles/EditorPluginPlasmaMcp_Windows-x64_Build/EditorPluginPlasmaMcp_Windows-x64_Build.vcxproj" Id="dfcde97a-5568-93f4-6046-3520fdd447e7">
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|*" Project="Debug" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|*" Project="Development" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|*" Project="Shipping" />
+      <Platform Project="x64" />
+      <Build Solution="*|Android-ARM64" Project="false" />
+      <Build Solution="*|Windows-ARM64" Project="false" />
+    </Project>
+    <Project Path="Intermediate/ProjectFiles/EditorPluginPlasmaMcp_Windows-ARM64_Build/EditorPluginPlasmaMcp_Windows-ARM64_Build.vcxproj" Id="960a7320-951d-326e-9f9b-e60d700abf6c">
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|*" Project="Debug" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|*" Project="Development" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|*" Project="Shipping" />
+      <Platform Project="x64" />
+      <Build Solution="*|Android-ARM64" Project="false" />
+      <Build Solution="*|Windows-x64" Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Launcher/Android/">
+    <Project Path="Intermediate/ProjectFiles/EditorPluginPlasmaMcp_Android-ARM64_Build/EditorPluginPlasmaMcp_Android-ARM64_Build.vcxproj" Id="441ea6d4-d552-77b5-c7a3-a75ea61f3632">
+      <Platform Project="ARM64" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Debug|*" Project="Debug" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Development|*" Project="Development" />
+      <BuildType Solution="EditorPluginPlasmaMcp-Shipping|*" Project="Shipping" />
+      <Build Solution="*|Windows-ARM64" Project="false" />
+      <Build Solution="*|Windows-x64" Project="false" />
+    </Project>
+  </Folder>
+</Solution>

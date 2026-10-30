@@ -1,0 +1,21 @@
+# Build output. A package repository holds source and content; binaries come from a build, and
+# from the release workflow for anyone who has no toolchain.
+Bin/
+Intermediate/
+obj/
+
+# Generated workspaces and IDE scratch.
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.user
+*.suo
+
+# What the packaging step produces. Releases carry these; the repository does not.
+*.plpkg
+*.plpkg.sha256
+
+# Packaged output and checksums regenerated at publish time
+_blobs/
+Package.sha256

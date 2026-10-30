@@ -1,0 +1,18 @@
+PluginInfo
+{
+	string %DisplayName{"Plasma MCP"}
+	string %Category{"Uncatagorized"}
+	string %MinEngineVersion{"0.11.2"}
+	string %MaxEngineVersion{"0.11.2"}
+	string %Icon{""}
+	string %Banner{""}
+	string %Description{"Plasma MCP."}
+	string %EditorPlugins{}
+	string %EditorEnginePlugins{"plEditorPluginPlasmaMcp"}
+	string %RuntimePlugins{}
+	string %PackageDependencies{}
+	string %RequiredPlugins{}
+	string %ExclusiveFeatures{}
+	string %EnabledInTemplates{}
+	string %PlasmaBuildTargetName{"PlasmaMcp"}
+}

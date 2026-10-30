@@ -1,0 +1,42 @@
+// Plasma MCP — a Plasma package.
+//
+// The AUTHORED manifest. Component hashes and sizes are NOT here: the packaging step computes
+// those and emits them into the published manifest that ships inside the .plpkg.
+//
+// Field reference and validation rules: Docs/PluginPackageManagerPlan.html §05.
+
+PackageInfo
+{
+	string %Id{"plasma.mcp"}
+	string %Version{"1.2.2"}
+	string %Publisher{"PlasmaTechnology"}
+	string %License{"MIT"}
+	string %Homepage{""}
+
+	// Must equal plSdkVersion::GetAbiTag() of the engine this is built against. The build
+	// configuration is part of it - a Development and a Shipping build do not share a binary
+	// interface.
+	string %MinEngineVersion{"0.11.2"}
+	string %MaxEngineVersion{"0.11.2"}
+	string %AbiTag{"win64-msvc19-0.11.2-abi6-dev"}
+
+	string %DisplayName{"Plasma MCP"}
+	string %Category{"Uncatagorized"}
+	string %Description{"Plasma MCP."}
+
+	// Artwork is optional. Point these at files in this package once there is any.
+	string %Icon{"Branding/PlasmaMCPIcon.png"}
+	string %Banner{"Branding/PlasmaMCPBanner.png"}
+
+	string %EditorPlugins{"plEditorPluginPlasmaMcp"}
+	string %EditorEnginePlugins{}
+	string %RuntimePlugins{}
+	string %PackageDependencies{}
+
+	Component { string %Name{"manifest"} string %Platform{"any"} }
+
+	Component { string %Name{"icon"} string %Platform{"any"} }
+
+	Component { string %Name{"banner"} string %Platform{"any"} }
+	Component { string %Name{"editor-win64"} string %Platform{"win64"} }
+}

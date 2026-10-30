@@ -1,0 +1,56 @@
+# Builds plasma.mcp on every push, and leaves the packed .plpkg as a workflow artifact.
+#
+# This is the same work the release workflow does, minus the release, so a broken build is found on
+# the commit that broke it rather than on the tag that was meant to ship it.
+#
+# The SDK comes from a repository variable - see Tools/Get-PlasmaSdk.ps1 for the three ways to point
+# at one. Without any of them set, this workflow fails with instructions.
+
+name: Build
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Windows x64 Development
+    runs-on: ${{ vars.PLASMA_RUNNER || 'windows-latest' }}
+
+    env:
+      PLASMA_SDK_ROOT: ${{ vars.PLASMA_SDK_ROOT }}
+      PLASMA_SDK_REPO: ${{ vars.PLASMA_SDK_REPO }}
+      PLASMA_SDK_TAG: ${{ vars.PLASMA_SDK_TAG }}
+      PLASMA_SDK_URL: ${{ vars.PLASMA_SDK_URL }}
+      # Reading an SDK release from a private repository needs a token that can see it; the
+      # workflow's own token only ever reaches this repository.
+      GH_TOKEN: ${{ secrets.PLASMA_SDK_TOKEN || secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache the engine SDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/PlasmaSdk
+          key: plasma-sdk-${{ vars.PLASMA_SDK_TAG || vars.PLASMA_SDK_URL || vars.PLASMA_SDK_REPO }}
+
+      - name: Resolve the engine SDK
+        shell: pwsh
+        run: ./Tools/Get-PlasmaSdk.ps1
+
+      - name: Build and pack
+        id: pack
+        shell: pwsh
+        run: ./Tools/Pack-Package.ps1 -Configuration Development
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.pack.outputs.package-name }}
+          path: |
+            ${{ steps.pack.outputs.package-path }}
+            ${{ steps.pack.outputs.package-path }}.sha256
+          if-no-files-found: error

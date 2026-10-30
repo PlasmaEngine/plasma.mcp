@@ -1,0 +1,124 @@
+# Publishes plasma.mcp as a GitHub release the Plasma editor can install from.
+#
+# Push a tag v<version> matching Package.plPackage's %Version, and this builds the package, packs it
+# and attaches the .plpkg to a release on this repository. "Import Repo…" in the editor's Package
+# Manager then finds it by ABI tag and installs it without needing a compiler or an SDK.
+#
+# Published versions are immutable by convention: fix a mistake with a new patch version rather than
+# by replacing an asset, because anyone who already installed the old one has no way to tell.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Mark the release as a prerelease'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Windows x64 Development
+    runs-on: ${{ vars.PLASMA_RUNNER || 'windows-latest' }}
+
+    env:
+      PLASMA_SDK_ROOT: ${{ vars.PLASMA_SDK_ROOT }}
+      PLASMA_SDK_REPO: ${{ vars.PLASMA_SDK_REPO }}
+      PLASMA_SDK_TAG: ${{ vars.PLASMA_SDK_TAG }}
+      PLASMA_SDK_URL: ${{ vars.PLASMA_SDK_URL }}
+      GH_TOKEN: ${{ secrets.PLASMA_SDK_TOKEN || secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # A tag that disagrees with the manifest ships a release called one version carrying another,
+      # and the editor believes the manifest. Better to fail here than to publish that.
+      - name: Check the tag against the manifest
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $manifest = Get-Content -LiteralPath Package.plPackage -Raw
+          $version = [regex]::Match($manifest, '%Version\{"([^"]*)"\}').Groups[1].Value
+          $tag = '${{ github.ref_name }}'.TrimStart('v')
+
+          if ($version -ne $tag) {
+            throw "Tag '${{ github.ref_name }}' does not match %Version{`"$version`"} in Package.plPackage."
+          }
+
+          Write-Host "Releasing version $version"
+
+      - name: Cache the engine SDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/PlasmaSdk
+          key: plasma-sdk-${{ vars.PLASMA_SDK_TAG || vars.PLASMA_SDK_URL || vars.PLASMA_SDK_REPO }}
+
+      - name: Resolve the engine SDK
+        shell: pwsh
+        run: ./Tools/Get-PlasmaSdk.ps1
+
+      - name: Build and pack
+        id: pack
+        shell: pwsh
+        run: ./Tools/Pack-Package.ps1 -Configuration Development
+
+      # workflow_dispatch has no tag, so the manifest supplies one. That also makes a manual run
+      # repeatable: bump %Version, run it, get a release.
+      - name: Decide the tag
+        id: tag
+        shell: pwsh
+        run: |
+          $tag = if ('${{ github.ref_type }}' -eq 'tag') { '${{ github.ref_name }}' } else { 'v${{ steps.pack.outputs.package-version }}' }
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "name=$tag"
+
+      - name: Publish the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # "no such release" is an expected answer below, not a failure.
+          $PSNativeCommandUseErrorActionPreference = $false
+
+          $notes = @"
+          ``${{ steps.pack.outputs.package-id }}@${{ steps.pack.outputs.package-version }}``
+
+          Built against engine ABI ``${{ steps.pack.outputs.abi-tag }}``.
+
+          Install it with **Import Repo…** in the Plasma editor's Package Manager, pointing at
+          ``${{ github.server_url }}/${{ github.repository }}``. The editor picks the asset whose
+          name carries its own ABI tag, so a build for another engine version is never offered.
+
+          sha256 ``${{ steps.pack.outputs.sha256 }}``
+          "@
+
+          $arguments = @(
+            'release', 'create', '${{ steps.tag.outputs.name }}',
+            '${{ steps.pack.outputs.package-path }}',
+            '${{ steps.pack.outputs.package-path }}.sha256',
+            '--title', '${{ steps.pack.outputs.package-id }} ${{ steps.pack.outputs.package-version }}',
+            '--notes', $notes
+          )
+
+          if ('${{ inputs.prerelease }}' -eq 'true') {
+            $arguments += '--prerelease'
+          }
+
+          # Recreating the release rather than failing keeps a re-run of the same tag usable. The
+          # version is still immutable in the sense that matters: the manifest inside names it, so a
+          # changed package needs a changed %Version.
+          gh release view '${{ steps.tag.outputs.name }}' | Out-Null
+          if ($LASTEXITCODE -eq 0) {
+            gh release delete '${{ steps.tag.outputs.name }}' --yes --cleanup-tag=false
+          }
+
+          gh @arguments
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Creating the release failed.'
+          }
