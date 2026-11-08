@@ -8,7 +8,7 @@
 PackageInfo
 {
 	string %Id{"plasma.mcp"}
-	string %Version{"1.2.2"}
+	string %Version{"1.3.0"}
 	string %Publisher{"PlasmaTechnology"}
 	string %License{"MIT"}
 	string %Homepage{""}
@@ -16,9 +16,9 @@ PackageInfo
 	// Must equal plSdkVersion::GetAbiTag() of the engine this is built against. The build
 	// configuration is part of it - a Development and a Shipping build do not share a binary
 	// interface.
-	string %MinEngineVersion{"0.11.2"}
-	string %MaxEngineVersion{"0.11.2"}
-	string %AbiTag{"win64-msvc19-0.11.2-abi6-dev"}
+	string %MinEngineVersion{"0.12.0"}
+	string %MaxEngineVersion{"0.12.0"}
+	string %AbiTag{"win64-msvc19-0.12.0-abi7-dev"}
 
 	string %DisplayName{"Plasma MCP"}
 	string %Category{"Uncatagorized"}

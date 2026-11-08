@@ -2,8 +2,8 @@ PluginInfo
 {
 	string %DisplayName{"Plasma MCP"}
 	string %Category{"Uncatagorized"}
-	string %MinEngineVersion{"0.11.2"}
-	string %MaxEngineVersion{"0.11.2"}
+	string %MinEngineVersion{"0.12.0"}
+	string %MaxEngineVersion{"0.12.0"}
 	string %Icon{""}
 	string %Banner{""}
 	string %Description{"Plasma MCP."}
