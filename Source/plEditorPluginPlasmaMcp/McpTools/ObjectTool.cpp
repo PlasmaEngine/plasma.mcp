@@ -403,6 +403,13 @@ namespace
           return PL_SUCCESS;
         }
 
+        // Times arrive as a plain number in seconds, the unit they are reported in and the property grid shows.
+        if (targetType == plVariant::Type::Time && input.IsNumber())
+        {
+          out_value = plTime::MakeFromSeconds(input.ConvertTo<double>());
+          return PL_SUCCESS;
+        }
+
         // Vectors, quaternions and colours arrive as a JSON object or array, which plVariant has no
         // conversion for, so they are assembled component by component before anything else is tried.
         plVariant composite;
